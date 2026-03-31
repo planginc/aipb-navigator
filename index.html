@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIPB Navigator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0c0f14;
+      --surface: #151920;
+      --surface-hover: #1c2230;
+      --border: #252d3a;
+      --text: #e2e8f0;
+      --text-muted: #8892a4;
+      --accent: #f59e0b;
+      --accent-dim: rgba(245, 158, 11, 0.12);
+      --accent-border: rgba(245, 158, 11, 0.25);
+      --tag-bg: #1a2332;
+      --tag-text: #7eb8da;
+      --locked-bg: rgba(239, 68, 68, 0.08);
+      --locked-border: rgba(239, 68, 68, 0.25);
+      --locked-text: #f87171;
+      --green: #34d399;
+      --green-dim: rgba(52, 211, 153, 0.1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .noise-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    .header {
+      padding: 2.5rem 1.5rem 1.5rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      padding: 0.35rem 0.75rem;
+      border-radius: 2px;
+      margin-bottom: 1rem;
+    }
+
+    .header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.3rem;
+    }
+
+    .header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      max-width: 600px;
+    }
+
+    .search-area {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0.5rem 1.5rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+    }
+
+    .search-area::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 0;
+      right: 0;
+      height: 20px;
+      background: linear-gradient(to bottom, var(--bg), transparent);
+      pointer-events: none;
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      width: 18px;
+      height: 18px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.85rem 1rem 0.85rem 2.75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-box input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-box input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 0.35rem 0.65rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--accent-border);
+      color: var(--text);
+    }
+
+    .filter-btn.active {
+      background: var(--accent-dim);
+      border-color: var(--accent-border);
+      color: var(--accent);
+    }
+
+    .results-meta {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0.5rem 1.5rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .results {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      transition: border-color 0.2s, transform 0.15s;
+      cursor: default;
+    }
+
+    .card:hover {
+      border-color: var(--accent-border);
+      transform: translateY(-1px);
+    }
+
+    .card.locked {
+      background: var(--locked-bg);
+      border-color: var(--locked-border);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      line-height: 1.35;
+    }
+
+    .card.locked .card-title {
+      color: var(--locked-text);
+    }
+
+    .card-category {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 0.25rem 0.5rem;
+      border-radius: 2px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .cat-course { background: rgba(99, 102, 241, 0.12); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.25); }
+    .cat-classroom { background: var(--green-dim); color: var(--green); border: 1px solid rgba(52, 211, 153, 0.25); }
+    .cat-framework { background: rgba(244, 114, 182, 0.12); color: #f472b6; border: 1px solid rgba(244, 114, 182, 0.25); }
+    .cat-resource { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
+    .cat-locked { background: var(--locked-bg); color: var(--locked-text); border: 1px solid var(--locked-border); }
+
+    .card-body {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.65;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-body mark {
+      background: var(--accent-dim);
+      color: var(--accent);
+      padding: 0.05em 0.2em;
+      border-radius: 2px;
+    }
+
+    .card-topics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .topic-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      padding: 0.2rem 0.45rem;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      border-radius: 2px;
+      letter-spacing: 0.03em;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 1rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .footer {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    @media (max-width: 640px) {
+      .header h1 { font-size: 1.4rem; }
+      .card { padding: 1rem; }
+      .card-header { flex-direction: column; gap: 0.5rem; }
+      .filter-row { gap: 0.35rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise-overlay"></div>
+
+  <header class="header">
+    <div class="header-badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      AI Profit Boardroom
+    </div>
+    <h1>AIPB Navigator</h1>
+    <p>Search Julian Goldie's AI Profit Boardroom classrooms by topic. Find what you need and where it lives inside the community.</p>
+  </header>
+
+  <div class="search-area">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="search" placeholder="Search topics... SEO, avatars, n8n, YouTube, Skool, scraping..." autofocus>
+    </div>
+    <div class="filter-row">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="course">Courses</button>
+      <button class="filter-btn" data-filter="classroom">Classrooms</button>
+      <button class="filter-btn" data-filter="framework">Frameworks</button>
+      <button class="filter-btn" data-filter="resource">Resources</button>
+      <button class="filter-btn" data-filter="locked">Locked</button>
+    </div>
+  </div>
+
+  <div class="results-meta" id="resultsMeta"></div>
+  <div class="results" id="results"></div>
+
+  <footer class="footer">
+    <span>Audited March 25-26, 2026</span>
+    <span>Data from JJ's classroom audit</span>
+  </footer>
+
+<script>
+const DATA = [
+  {
+    title: "Start Here: 6-Week AI Automation Course",
+    category: "course",
+    description: "Julian's structured onboarding course. Week 1: What is AI, AI Tool vs AI Agent, building an agent in under 5 min, custom HTTP node in n8n. Week 2: Business mindset, AI automation platforms, first free automation. Week 3: Operations automation, SEO blog posting, creating a Skool group, utilizing AI agents. Week 4: Customer success mindset, human in the loop, QC, packaging and pricing your first offer. Week 5: Personal AI assistant, AI avatar creation, Genspark + Lindy combo. Week 6: Recap and final list.",
+    topics: ["ai basics", "n8n", "automation", "ai agents", "getting started", "pricing", "offers", "avatar", "genspark", "lindy", "onboarding", "beginner"]
+  },
+  {
+    title: "$300K AI Playbook",
+    category: "course",
+    description: "Julian's everything-in-one-place playbook. Covers: Time Audits, Email Automation, X/Twitter Automation, Newsletter Automation, Shorts creation, AI Avatar Videos, Avatar Voice + Publishing Process, Screencast recordings of avatar video process, Automating Videos with AI, Fathom meeting automation, Zapier + Fathom, Opt-ins + Landing Pages + Websites, Automating SOPs, Video to Blog Posts, Scraping Live Web Pages with AI + N8N. Strong video automation content here.",
+    topics: ["video", "shorts", "avatar", "email", "twitter", "newsletter", "fathom", "zapier", "landing pages", "sops", "blog", "scraping", "n8n", "automation", "playbook"]
+  },
+  {
+    title: "Foundations & Getting Started",
+    category: "classroom",
+    description: "Quick-start track (overlaps with the 6-week course). Covers: Watch This First intro, Time Audits, AI & Automation Tools breakdown, CustomGPT setup + monetization, OpenManus setup, AI Team Chat Responder, Automating Team Meeting Notes with AI.",
+    topics: ["getting started", "time audits", "customgpt", "openmanus", "team automation", "meeting notes", "beginner", "foundations"]
+  },
+  {
+    title: "SOP Updates: March 2026",
+    category: "classroom",
+    description: "95+ daily video tutorials from March 2026, posted 1-5 per day. Primary focus: OpenClaw AI agent framework (updates, integrations, browser automation, teams, marketing, SEO). Also covers Claude Code (Auto-Mode, Skills, Scheduled Tasks, Channels, Cowork, Computer Use), Google tools (Gemini, AI Studio, Stitch, Pomelli), Perplexity, Minimax 2.7, Nvidia Nemotron, Ollama local AI, NotebookLM. Includes OpenClaw Full 6-Hour Course and Moltbot Course.",
+    topics: ["openclaw", "claude code", "gemini", "perplexity", "minimax", "ollama", "notebooklm", "ai agents", "browser automation", "sops", "daily updates", "march 2026", "nvidia", "moltbot"]
+  },
+  {
+    title: "SOP Updates: February 2026 (Late Feb)",
+    category: "classroom",
+    description: "45+ daily tutorials from Feb 17-28. OpenClaw updates and integrations, competitor comparisons. Covers: OpenClaw Mission Control, Skills, Marketing Team, Security Issues. Also Claude Code Remote Control, Cowork vs OpenClaw, Sonnet 4.6, Perplexity Computer, Google Antigravity/Opal/Gemini 3.1 Pro, AgentZero, Manus Agents, NotebookLM, Grok 4.2, Discord Parallel Agents, IronClaw, Rork, PocketPaw, Nano Banana.",
+    topics: ["openclaw", "claude code", "cowork", "perplexity", "gemini", "agentzero", "manus", "notebooklm", "grok", "sops", "daily updates", "february 2026"]
+  },
+  {
+    title: "SOP Updates: Nov 2025 - Feb 16, 2026 (Full Archive)",
+    category: "classroom",
+    description: "Historical archive spanning November 2025 through mid-February 2026. February: OpenClaw dominance (KimiClaw, PicoClaw, Telegram, YouTube Clipper Skill, Agent Teams), Claude Opus 4.6, Seedance 2.0, Pony Alpha, MiniMax M2.5, NotebookLM tricks, Antigravity video/podcast creation. November: Pre-OpenClaw era, Google-heavy (Gemini 3.0, Antigravity IDE, Stitch, Jules, Nano Banana Pro), ChatGPT Atlas, Manus 1.5, ElevenLabs Agent Workflows. Monetization: Twitter AI System ($1000/day), Reddit Revenue Loop System, Skool AI Growth.",
+    topics: ["openclaw", "claude", "seedance", "notebooklm", "antigravity", "gemini", "elevenlabs", "twitter", "reddit", "monetization", "sops", "daily updates", "archive", "history"]
+  },
+  {
+    title: "Lead Gen & Social Media",
+    category: "classroom",
+    description: "The most video-automation-focused classroom. Lessons: X/Twitter Automation, Shorts Automation, AI Avatar Videos, AI Avatar + Publishing Process, Automating Videos with AI, How to Automate Screencasts + Tutorials, ChatGPT Faceless Videos Method, Make Money with Grok 3, HeyGen + Avatar IV, How to Automate Viral AI ASMR Videos, AI Avatar Videos vs ME (the human) comparison. Covers shorts, avatars, faceless videos, ASMR automation, screencasts.",
+    topics: ["video", "shorts", "avatar", "heygen", "faceless", "asmr", "screencasts", "twitter", "social media", "lead gen", "grok", "automation", "publishing"]
+  },
+  {
+    title: "Email & Content Automation",
+    category: "classroom",
+    description: "Content repurposing focus. Lessons: How to Automate Your Emails, Newsletter Automation, Video to Blog Post Automation, Video Transcript Method, DeepSeek + Vectorshift Content Creator, Building an Email List, How to Create Images with the NEW ChatGPT.",
+    topics: ["email", "newsletter", "blog", "content repurposing", "video to blog", "deepseek", "vectorshift", "email list", "chatgpt", "images", "automation"]
+  },
+  {
+    title: "N8N Templates & Workflows",
+    category: "classroom",
+    description: "Organized by category. VIDEO: Viral Reels Workflow, Short-Form Video Generator, Veo 3 Automation, HeyGen AI Automation, Video Shorts Clipper, Yeti Vlogger, Veo 3 Ad Generator, Minimax + Audio, Google AI Avatars, AI Video Generator. SCRAPING: Google Trends Extractor, FireCrawl Reddit Bot, Perplexity Scraper, Apify (Google Maps, social), Reddit Scraper, sitemap extraction. SOCIAL: Social Media Posting Machine, WordPress to X/FB/IG, Auto Posting, Twitter Poster, AI Ads. AUDIO: Suno Music Generator, Seedance Pro + Audio, Voice Agent, Podcast AI Agent. EMAIL: AI Email Analyzer, Auto-Responder, Cold Email Agent, Newsletter Agent. SEO: Lovable + N8N, SEO WordPress posts, on-page audit, keyword search volume. GENERAL: WhatsApp/Telegram chatbots, RAG knowledge hub, Upwork job automation, LinkedIn lead gen, 1-Click Book Generator, 1000+ templates link.",
+    topics: ["n8n", "templates", "workflows", "video", "reels", "veo3", "heygen", "scraping", "apify", "firecrawl", "reddit", "social media", "suno", "music", "podcast", "email", "seo", "wordpress", "linkedin", "upwork", "chatbot", "whatsapp", "telegram", "automation"]
+  },
+  {
+    title: "Vick's Learning Corner",
+    category: "classroom",
+    description: "Community member Vick's beginner-friendly N8N tutorial series. How to create N8N workflows, connect Facebook/Google Drive/WhatsApp nodes, Prompt to Automation workflow, Vibe Code to GitHub to Deployment. Also covers GenSpark use cases, building a personal GenSpark assistant, Lead Qualification Telegram Bot, and AI Agent Node usage in N8N. Great for N8N onboarding.",
+    topics: ["n8n", "beginner", "tutorials", "genspark", "telegram bot", "facebook", "google drive", "whatsapp", "deployment", "github", "onboarding"]
+  },
+  {
+    title: "AI Agents & Workflows",
+    category: "classroom",
+    description: "Building AI agents across multiple platforms. DeepSeek heavy: full 4-hour course, N8N agents, Cline 3.4 integration, Make automations, monetization guide. N8N agents: MCP setup, Sales Agent, 7 AI agents overview. Google/Gemini: Computer Use agents, Deep Research, Gemma 3, Gemini 2.5 Pro, Bolt integration. Also: Custom GPTs, GitHub Copilot Agent Mode, Cline 3.3/3.7, Grok 3, GPT 4.5, Claude 3.7 Sonnet + Vectorshift, Manus AI, RooCode + Claude Computer Use, Trae AI, How to Automate SOPs, Make.com Pinterest workflow.",
+    topics: ["ai agents", "deepseek", "n8n", "mcp", "cline", "make.com", "gemini", "copilot", "grok", "claude", "manus", "vectorshift", "roocode", "sops", "pinterest", "custom gpts", "bolt"]
+  },
+  {
+    title: "Agency Course: How to Get Clients and Scale",
+    category: "course",
+    description: "Structured 5-week business course with weekly coaching calls. Week 1: Unlock High Paying Clients (offers, productization). Week 2: Lead Generation (best methods). Week 3: Sales Mastery (proposals, mindset, scripts, follow-ups, tracking). Week 4: Hiring (time audits, KPIs, team management). Week 5: Self Improving Systems to Scale (EOS Scorecards, Level 10 Meetings, thinking time). Bonus: How I Make Money with Skool, Facebook Ads for getting clients.",
+    topics: ["agency", "clients", "sales", "lead gen", "hiring", "scaling", "productization", "offers", "eos", "scorecards", "facebook ads", "skool", "business"]
+  },
+  {
+    title: "Coaching Calls Archive",
+    category: "classroom",
+    description: "Archive of daily 1-hour AI Q&A coaching calls from June 2025 through March 2026. Not individually documented due to volume. Sample topics from March 13th: Perplexity Computer Mode, Claude Artifacts, Claude Skills, KIE.ai ($0.25/video vs Google $1.00), Google Labs/Pomelli/Flow + Gmail, Recall.AI, Napkin (diagrams from text), Paperclip (agent orchestrator), Manus/GenSpark, Codex for GitHub issues, POC-to-MVP workflow. Revisit individual calls when specific topics come up.",
+    topics: ["coaching", "q&a", "live calls", "perplexity", "claude", "kie.ai", "napkin", "manus", "genspark", "codex", "github", "weekly"]
+  },
+  {
+    title: "Web Automation & Scraping",
+    category: "classroom",
+    description: "Mix of scraping, meeting automation, client onboarding, and dev tools. Lessons: Scraping Live Pages with AI + N8N, Automations (opt-ins, landing pages, websites), Fathom Automations, Fathom + Zapier, Live Page to Video Transcript Automation, Client Onboarding through GHL (GoHighLevel), Cline 3.4 Web Research, Claude 3.7 Sonnet + Bolt DIY, ChatGPT macOS Coding Editor, AI Powered Inbound Call Agent.",
+    topics: ["scraping", "n8n", "fathom", "zapier", "gohighlevel", "ghl", "client onboarding", "cline", "claude", "bolt", "call agent", "web automation", "landing pages"]
+  },
+  {
+    title: "AI SEO Automation",
+    category: "classroom",
+    description: "Julian's core expertise (his YouTube channel is 'Julian Goldie SEO'). Lessons: SEO Writing AI, Rank #1 with Make SEO, Perplexity AI SEO, Perplexity + Claude Workflow for SEO, Rank #1 in 60 Seconds, 50+ Free AI SEO Tools, How to Humanize AI Text and Bypass AI Detectors, Manus (building, vibe coding, editing websites), LinkedIn SEO, AI SEO Process to Rank #1.",
+    topics: ["seo", "perplexity", "claude", "make.com", "ai detection", "humanize", "linkedin", "manus", "ranking", "keywords", "content", "writing"]
+  },
+  {
+    title: "50+ Free AI SEO Tools",
+    category: "classroom",
+    description: "Companion to the AI SEO Automation classroom. Includes: Free Content Humanizer, Free AI SEO Content Tool, Free Keyword Research Tool, Free 1-Click Content Optimizer, Free Topical Map Maker, plus a 40-minute overview video covering all 50+ tools. Also promotes Julian's SEO Elite Circle and free SEO strategy session.",
+    topics: ["seo", "free tools", "keyword research", "content optimizer", "topical map", "humanizer", "seo tools"]
+  },
+  {
+    title: "Recommended Watches",
+    category: "resource",
+    description: "Julian's curated shortlist of longer-form deep-dive content. Includes: N8N Agents, Open Operator (browser automation), Abacus AI, Automate Websites with Windsurf AI, DeepSeek-R1 Full Course, Bolt.DIY, Manus Full 3-Hour Course. Mix of deep-dive courses and tool overviews.",
+    topics: ["n8n", "deepseek", "manus", "bolt", "windsurf", "browser automation", "courses", "learning"]
+  },
+  {
+    title: "YouTube AI: 6-Week No BS Roadmap",
+    category: "course",
+    description: "Full structured YouTube course. Week 1 (Strategy): Reverse-engineer monetization funnel before creating content, don't chase views, set a 'get out point' (300 views min or 30 videos no leads). Week 2 (30-Day Challenge): 1 video/day, clickbait title template (65 char max), build funnel landing page. Week 3 (Content Creation): Screencast format, Descript for editing (under 10 min, studio sound), thumbnail psychology, YouTube SEO overrated. Week 4 (Iteration): Analytics, trending topics, pen/paper brainstorming. Week 5 (Systems): Delegate/eliminate/hire framework, Shorts SOP, weekly elimination list. Week 6 (Iteration): Stats tracking, creative burnout, split testing via thumbnailtest.com, batching sessions. Bonus: YouTube Checklist SOP, Thumbnail hiring via Upwork ($5/thumbnail), How I Get 10 Million Views. Content ideas: UGC vlogs, tutorials, reviews (affiliate), AI cartoons, stories, 'AI vs human' comparisons.",
+    topics: ["youtube", "video", "channel", "thumbnails", "descript", "shorts", "content creation", "monetization", "upwork", "split testing", "analytics", "seo", "funnel"]
+  },
+  {
+    title: "YouTube AI: Publishing & Scaling",
+    category: "course",
+    description: "Continuation of YouTube roadmap. Publishing: Shorts = 5-8/day for reach (fewer conversions). Livestreams via StreamYard across 5-10 platforms simultaneously. Obsess over the hook (first 15-30 seconds). Scaling: Quality control to avoid AI slop. Julian's team: 8 long-form + 3 short-form editors. QC method: watch first 30 seconds, annotate with Skitch, group chat for feedback. CTR benchmark: below 7% = video is dead. Thumbnails via Gemini + Nano Banana. Living SOP with 'Mistakes to avoid' list. Repurposing: 50-100 blogs/day across 10-15 platforms (Reddit, LinkedIn, websites, X, Medium). Video clipping to shorts.",
+    topics: ["youtube", "shorts", "streamyard", "livestream", "quality control", "thumbnails", "ctr", "repurposing", "blog", "reddit", "linkedin", "scaling", "team", "editors"]
+  },
+  {
+    title: "Affiliate Marketing: How to Make Money Fast",
+    category: "classroom",
+    description: "Covers 4 methods: AI Money Lab (83 Second Magic), Clipping + Repurposing, Reshare Method, Reviews. Also: How to Automate Affiliate Marketing, Mistakes to Avoid, Google Gemini for making money online. Member case studies: Sanny (quick sale via video clips), Steve Light (AI clipping), Elsa (affiliate sales), MQ ($399 from 1 tweet), Jacky Chou (podcast method, 2 sales in 24 hours).",
+    topics: ["affiliate marketing", "monetization", "clipping", "repurposing", "reviews", "gemini", "case studies", "sales", "income"]
+  },
+  {
+    title: "How to 100X Productivity with ChatGPT",
+    category: "classroom",
+    description: "Final unlocked classroom in the catalog. Lessons: Intro and 1 Easy WIN, 7-Figure SEO Productivity Hacks, How to Remember 100X More, How to Learn 100X Faster, How to Boost Your Energy, Never Type A Prompt Again (voice/dictation workflows), How to Get Rid of Lowest Leverage Distraction, How to Quickly Scale Your Biz. ChatGPT-focused productivity and mindset content.",
+    topics: ["chatgpt", "productivity", "voice", "dictation", "seo", "learning", "energy", "mindset", "scaling"]
+  },
+  {
+    title: "AI Tools I Use",
+    category: "resource",
+    description: "A Google Doc listing Julian's current AI tool stack (what he uses and what he doesn't), kept updated. Purpose: reduce overwhelm for members choosing tools. Also contains 'How I Make Money with Skool' lesson (locked, requires DM to Julian for access).",
+    topics: ["tools", "tool stack", "recommendations", "reference"]
+  },
+  {
+    title: "SOPs Collection (Skipped / Outdated)",
+    category: "resource",
+    description: "Julian's best SOPs and workflows from August-October 2025. Intentionally skipped during the March 2026 audit because 6+ month old AI SOPs are likely outdated. Low priority for revisit.",
+    topics: ["sops", "workflows", "outdated", "archive"]
+  },
+  {
+    title: "Road to $10K",
+    category: "classroom",
+    description: "Lessons: How I Make $640/Day with AI Avatars (11-min video showing 7x revenue with avatar vs. face, directly relevant to AI UGC shorts), How to Make Money with Skool, Twitter AI System $1000/Day, Facebook income method. Also includes the full 'Goldie Niche Stack Framework' 30-day SOP for building a paid Skool community using AI. Phase 1 (Days 1-7): niche selection via Google Trends + Gemini, validate on Skool Discover, create dream member avatar, name community. Tools: Skool, Google Trends, Gemini, YouTube, VidIQ, NotebookLM, Descript, Canva.",
+    topics: ["monetization", "avatar", "income", "skool", "twitter", "facebook", "niche", "community building", "google trends", "vidiq", "notebooklm", "descript", "canva"]
+  },
+  {
+    title: "Road to $10K: Breaker Beliefs + Twitter AI System + Prompt Pack",
+    category: "framework",
+    description: "BREAKER BELIEFS (mindset blocks): 'I need to be an expert' (being 1-2 steps ahead is enough), 'I don't have time' (1 piece of content, AI repurposes into many), 'I need proof first' (start low price, collect testimonials, raise price), 'It's saturated' (unique angle differentiates). PROMPT PACK: 7 copy-paste prompts for niche ideas, avatar creation, community naming, positioning, first 10 posts, 10 YouTube ideas, welcome video script. TWITTER AI SYSTEM ($1000/Day): 10-40 tweets/day volume play. Content via Claude/ChatGPT. VA cost: $3/day. Full automation gets accounts banned (tested on 3 accounts). Three content types: Proof, Process, Philosophy. Funnel: Tweet > Profile > Link > Sale. Fresh account math: 100 profile clicks/day > 17 leads > 3-4 sales/day at $597 product.",
+    topics: ["mindset", "twitter", "prompts", "monetization", "content", "claude", "chatgpt", "va", "funnel", "sales", "community", "skool"]
+  },
+  {
+    title: "How to Make Money with a Skool Community (Full SOP)",
+    category: "framework",
+    description: "Step-by-step SOP for building a paid Skool community. Step 1: Define your offer (what audience wants, risk-free offer). Step 2: Set up Skool (Community, Classroom, Calendar sections). Step 3: Build funnel (Attention > Invite to Skool > Build Trust > Convert). Step 4: Fill funnel with daily/weekly content on Twitter, YouTube, blog, email. Step 5: Value Ladder (Free lead magnet > $7-50 course > $300+/mo Mastermind > $1000+/mo DFY services). Step 6: Sell Mastermind (free for agency clients, or charge $300+/mo, or use as conversion tool). Step 7: Live calls = passive course content. Step 8: Scale with automation (recycle content, collect testimonials). Pro tip: Skool vs Facebook Groups -- Skool allows payment, structured content, no algorithm.",
+    topics: ["skool", "community", "monetization", "funnel", "value ladder", "mastermind", "content", "lead magnet", "agency", "live calls", "facebook groups", "sop"]
+  },
+  {
+    title: "Goldie Niche Stack Framework (30-Day Skool SOP)",
+    category: "framework",
+    description: "30-day framework for building a paid Skool community using AI. Phase 1 (Days 1-7): Niche selection using Google Trends + Gemini, validate on Skool Discover, create dream member avatar, name community. Uses copy-paste prompts for niche brainstorming and avatar creation. Tools: Skool, Google Trends, Gemini, YouTube, VidIQ, NotebookLM (for faceless AI video generation), Descript, Canva.",
+    topics: ["skool", "niche", "community", "30 day", "google trends", "gemini", "vidiq", "notebooklm", "descript", "canva", "avatar", "framework"]
+  },
+  {
+    title: "Annual Member Vault",
+    category: "resource",
+    description: "Exclusive annual member assets (claimed value $112,755+). Includes: Complete SOP Playbook (115+ systems), Sales Team SOP, Agency Metrics Dashboard / EOS Scorecard, Group Interview Playbook, 189+ YouTube Thumbnail Templates (Canva), Million-Dollar Tweet Library, Private Vlog & Podcast Archive, Winning Ad Swipe File, Custom GPT Collection (DM Julian), Weekly Performance Leaderboard (cash prizes), Annual Member Discord (DM for invite), SEO Elite Circle access (DM with email), $1,000 Agency Credit, Lifetime Price Lock, Commercial License, All Future Content FREE, 2 Bonus Annual Memberships (DM with emails). Several items require DMing Julian to unlock.",
+    topics: ["annual", "vault", "sops", "templates", "thumbnails", "tweets", "ads", "gpts", "discord", "seo elite", "bonus", "commercial license"]
+  },
+  {
+    title: "Locked: AI SEO Audit",
+    category: "locked",
+    description: "Requires Level 4 in the Skool community to unlock.",
+    topics: ["seo", "audit", "locked", "level 4"]
+  },
+  {
+    title: "Locked: Loom Feedback",
+    category: "locked",
+    description: "Requires Level 5 in the Skool community to unlock.",
+    topics: ["loom", "feedback", "locked", "level 5"]
+  },
+  {
+    title: "Locked: Custom SEO GPT",
+    category: "locked",
+    description: "Requires Level 6 in the Skool community to unlock.",
+    topics: ["seo", "gpt", "custom", "locked", "level 6"]
+  },
+  {
+    title: "Locked: Boardroom Insider",
+    category: "locked",
+    description: "Requires Level 7 in the Skool community to unlock.",
+    topics: ["insider", "locked", "level 7"]
+  },
+  {
+    title: "Locked: Elite Systems Call",
+    category: "locked",
+    description: "Requires Level 8 in the Skool community to unlock.",
+    topics: ["systems", "coaching", "locked", "level 8"]
+  },
+  {
+    title: "Locked: AI Strategy Call with Julian",
+    category: "locked",
+    description: "Requires Level 9 in the Skool community to unlock. Direct strategy call with Julian Goldie.",
+    topics: ["strategy", "coaching", "julian", "locked", "level 9"]
+  }
+];
+
+// Search + filter logic
+const searchInput = document.getElementById('search');
+const resultsDiv = document.getElementById('results');
+const resultsMeta = document.getElementById('resultsMeta');
+const filterBtns = document.querySelectorAll('.filter-btn');
+let activeFilter = 'all';
+
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function highlightText(text, query) {
+  if (!query) return text;
+  const words = query.trim().split(/\s+/).filter(w => w.length > 1);
+  if (words.length === 0) return text;
+  const pattern = new RegExp(`(${words.map(escapeRegex).join('|')})`, 'gi');
+  return text.replace(pattern, '<mark>$1</mark>');
+}
+
+function scoreMatch(item, query) {
+  if (!query) return 1;
+  const words = query.toLowerCase().trim().split(/\s+/).filter(w => w.length > 1);
+  if (words.length === 0) return 1;
+  let score = 0;
+  const titleLower = item.title.toLowerCase();
+  const descLower = item.description.toLowerCase();
+  const topicsStr = item.topics.join(' ').toLowerCase();
+
+  for (const word of words) {
+    if (titleLower.includes(word)) score += 10;
+    if (topicsStr.includes(word)) score += 5;
+    if (descLower.includes(word)) score += 2;
+  }
+  return score;
+}
+
+function getCategoryLabel(cat) {
+  const labels = {
+    course: 'Course',
+    classroom: 'Classroom',
+    framework: 'Framework',
+    resource: 'Resource',
+    locked: 'Locked'
+  };
+  return labels[cat] || cat;
+}
+
+function render() {
+  const query = searchInput.value.trim();
+  let items = DATA;
+
+  // Filter by category
+  if (activeFilter !== 'all') {
+    items = items.filter(item => item.category === activeFilter);
+  }
+
+  // Score and filter by search
+  if (query) {
+    items = items
+      .map(item => ({ ...item, score: scoreMatch(item, query) }))
+      .filter(item => item.score > 0)
+      .sort((a, b) => b.score - a.score);
+  }
+
+  // Update meta
+  const total = items.length;
+  const label = query ? `${total} result${total !== 1 ? 's' : ''} for "${query}"` : `${total} classroom${total !== 1 ? 's' : ''}`;
+  resultsMeta.textContent = label;
+
+  // Render cards
+  if (items.length === 0) {
+    resultsDiv.innerHTML = `
+      <div class="empty-state">
+        <h3>No matches found</h3>
+        <p>Try different keywords or clear the filter.</p>
+      </div>`;
+    return;
+  }
+
+  resultsDiv.innerHTML = items.map(item => {
+    const isLocked = item.category === 'locked';
+    return `
+      <div class="card ${isLocked ? 'locked' : ''}">
+        <div class="card-header">
+          <div class="card-title">${highlightText(item.title, query)}</div>
+          <span class="card-category cat-${item.category}">${getCategoryLabel(item.category)}</span>
+        </div>
+        <div class="card-body">${highlightText(item.description, query)}</div>
+        <div class="card-topics">
+          ${item.topics.map(t => `<span class="topic-tag">${t}</span>`).join('')}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// Event listeners
+searchInput.addEventListener('input', render);
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    render();
+  });
+});
+
+// Initial render
+render();
+</script>
+</body>
+</html>
