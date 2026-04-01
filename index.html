@@ -258,10 +258,40 @@
       border-radius: 2px;
     }
 
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.75rem;
+      gap: 1rem;
+    }
+
     .card-topics {
       display: flex;
       flex-wrap: wrap;
       gap: 0.35rem;
+      flex: 1;
+    }
+
+    .skool-link {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      text-decoration: none;
+      white-space: nowrap;
+      padding: 0.25rem 0.5rem;
+      border: 1px solid var(--accent-border);
+      border-radius: 2px;
+      background: var(--accent-dim);
+      transition: background 0.15s, border-color 0.15s;
+      flex-shrink: 0;
+    }
+
+    .skool-link:hover {
+      background: rgba(245, 158, 11, 0.2);
+      border-color: var(--accent);
     }
 
     .topic-tag {
@@ -347,30 +377,35 @@ const DATA = [
   {
     title: "Start Here: 6-Week AI Automation Course",
     category: "course",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/6efd5648?md=70fd59190fd84ea2b4d7f586260867a6",
     description: "Julian's structured onboarding course. Week 1: What is AI, AI Tool vs AI Agent, building an agent in under 5 min, custom HTTP node in n8n. Week 2: Business mindset, AI automation platforms, first free automation. Week 3: Operations automation, SEO blog posting, creating a Skool group, utilizing AI agents. Week 4: Customer success mindset, human in the loop, QC, packaging and pricing your first offer. Week 5: Personal AI assistant, AI avatar creation, Genspark + Lindy combo. Week 6: Recap and final list.",
     topics: ["ai basics", "n8n", "automation", "ai agents", "getting started", "pricing", "offers", "avatar", "genspark", "lindy", "onboarding", "beginner"]
   },
   {
     title: "$300K AI Playbook",
     category: "course",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/ec66b3b6?md=eee5ee03651e4f30a7186f547f685401",
     description: "Julian's everything-in-one-place playbook. Covers: Time Audits, Email Automation, X/Twitter Automation, Newsletter Automation, Shorts creation, AI Avatar Videos, Avatar Voice + Publishing Process, Screencast recordings of avatar video process, Automating Videos with AI, Fathom meeting automation, Zapier + Fathom, Opt-ins + Landing Pages + Websites, Automating SOPs, Video to Blog Posts, Scraping Live Web Pages with AI + N8N. Strong video automation content here.",
     topics: ["video", "shorts", "avatar", "email", "twitter", "newsletter", "fathom", "zapier", "landing pages", "sops", "blog", "scraping", "n8n", "automation", "playbook"]
   },
   {
     title: "Foundations & Getting Started",
     category: "classroom",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/14994921?md=6d02537b17e04f298e3d9ddc2df208f2",
     description: "Quick-start track (overlaps with the 6-week course). Covers: Watch This First intro, Time Audits, AI & Automation Tools breakdown, CustomGPT setup + monetization, OpenManus setup, AI Team Chat Responder, Automating Team Meeting Notes with AI.",
     topics: ["getting started", "time audits", "customgpt", "openmanus", "team automation", "meeting notes", "beginner", "foundations"]
   },
   {
     title: "SOP Updates: March 2026",
     category: "classroom",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/932bc3ab?md=51f191ee9de24b64a43f023a3e9b3077",
     description: "95+ daily video tutorials from March 2026, posted 1-5 per day. Primary focus: OpenClaw AI agent framework (updates, integrations, browser automation, teams, marketing, SEO). Also covers Claude Code (Auto-Mode, Skills, Scheduled Tasks, Channels, Cowork, Computer Use), Google tools (Gemini, AI Studio, Stitch, Pomelli), Perplexity, Minimax 2.7, Nvidia Nemotron, Ollama local AI, NotebookLM. Includes OpenClaw Full 6-Hour Course and Moltbot Course.",
     topics: ["openclaw", "claude code", "gemini", "perplexity", "minimax", "ollama", "notebooklm", "ai agents", "browser automation", "sops", "daily updates", "march 2026", "nvidia", "moltbot"]
   },
   {
     title: "SOP Updates: February 2026 (Late Feb)",
     category: "classroom",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/27b688d1?md=7d81ce66efef4f8f820b0440c899c51c",
     description: "45+ daily tutorials from Feb 17-28. OpenClaw updates and integrations, competitor comparisons. Covers: OpenClaw Mission Control, Skills, Marketing Team, Security Issues. Also Claude Code Remote Control, Cowork vs OpenClaw, Sonnet 4.6, Perplexity Computer, Google Antigravity/Opal/Gemini 3.1 Pro, AgentZero, Manus Agents, NotebookLM, Grok 4.2, Discord Parallel Agents, IronClaw, Rork, PocketPaw, Nano Banana.",
     topics: ["openclaw", "claude code", "cowork", "perplexity", "gemini", "agentzero", "manus", "notebooklm", "grok", "sops", "daily updates", "february 2026"]
   },
@@ -383,72 +418,91 @@ const DATA = [
   {
     title: "Lead Gen & Social Media",
     category: "classroom",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/e8aad6a9?md=6aff9e89f41a4288b74e21f08b29281a",
     description: "The most video-automation-focused classroom. Lessons: X/Twitter Automation, Shorts Automation, AI Avatar Videos, AI Avatar + Publishing Process, Automating Videos with AI, How to Automate Screencasts + Tutorials, ChatGPT Faceless Videos Method, Make Money with Grok 3, HeyGen + Avatar IV, How to Automate Viral AI ASMR Videos, AI Avatar Videos vs ME (the human) comparison. Covers shorts, avatars, faceless videos, ASMR automation, screencasts.",
     topics: ["video", "shorts", "avatar", "heygen", "faceless", "asmr", "screencasts", "twitter", "social media", "lead gen", "grok", "automation", "publishing"]
   },
   {
     title: "Email & Content Automation",
     category: "classroom",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/5a0d2b18?md=1d4224b129cf42c79b20459d6115d92e",
     description: "Content repurposing focus. Lessons: How to Automate Your Emails, Newsletter Automation, Video to Blog Post Automation, Video Transcript Method, DeepSeek + Vectorshift Content Creator, Building an Email List, How to Create Images with the NEW ChatGPT.",
     topics: ["email", "newsletter", "blog", "content repurposing", "video to blog", "deepseek", "vectorshift", "email list", "chatgpt", "images", "automation"]
   },
   {
     title: "N8N Templates & Workflows",
     category: "classroom",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/ddfa5125?md=3b5ffb802fc247b58321e97c173c4275",
     description: "Organized by category. VIDEO: Viral Reels Workflow, Short-Form Video Generator, Veo 3 Automation, HeyGen AI Automation, Video Shorts Clipper, Yeti Vlogger, Veo 3 Ad Generator, Minimax + Audio, Google AI Avatars, AI Video Generator. SCRAPING: Google Trends Extractor, FireCrawl Reddit Bot, Perplexity Scraper, Apify (Google Maps, social), Reddit Scraper, sitemap extraction. SOCIAL: Social Media Posting Machine, WordPress to X/FB/IG, Auto Posting, Twitter Poster, AI Ads. AUDIO: Suno Music Generator, Seedance Pro + Audio, Voice Agent, Podcast AI Agent. EMAIL: AI Email Analyzer, Auto-Responder, Cold Email Agent, Newsletter Agent. SEO: Lovable + N8N, SEO WordPress posts, on-page audit, keyword search volume. GENERAL: WhatsApp/Telegram chatbots, RAG knowledge hub, Upwork job automation, LinkedIn lead gen, 1-Click Book Generator, 1000+ templates link.",
     topics: ["n8n", "templates", "workflows", "video", "reels", "veo3", "heygen", "scraping", "apify", "firecrawl", "reddit", "social media", "suno", "music", "podcast", "email", "seo", "wordpress", "linkedin", "upwork", "chatbot", "whatsapp", "telegram", "automation"]
   },
   {
     title: "Vick's Learning Corner",
     category: "classroom",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/1648ecce?md=f1e1996f037040fdb18ab2b228215a58",
     description: "Community member Vick's beginner-friendly N8N tutorial series. How to create N8N workflows, connect Facebook/Google Drive/WhatsApp nodes, Prompt to Automation workflow, Vibe Code to GitHub to Deployment. Also covers GenSpark use cases, building a personal GenSpark assistant, Lead Qualification Telegram Bot, and AI Agent Node usage in N8N. Great for N8N onboarding.",
     topics: ["n8n", "beginner", "tutorials", "genspark", "telegram bot", "facebook", "google drive", "whatsapp", "deployment", "github", "onboarding"]
   },
   {
     title: "AI Agents & Workflows",
     category: "classroom",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/cbb27978?md=b1d605ee4c5e4510a35bb5ec43221235",
     description: "Building AI agents across multiple platforms. DeepSeek heavy: full 4-hour course, N8N agents, Cline 3.4 integration, Make automations, monetization guide. N8N agents: MCP setup, Sales Agent, 7 AI agents overview. Google/Gemini: Computer Use agents, Deep Research, Gemma 3, Gemini 2.5 Pro, Bolt integration. Also: Custom GPTs, GitHub Copilot Agent Mode, Cline 3.3/3.7, Grok 3, GPT 4.5, Claude 3.7 Sonnet + Vectorshift, Manus AI, RooCode + Claude Computer Use, Trae AI, How to Automate SOPs, Make.com Pinterest workflow.",
     topics: ["ai agents", "deepseek", "n8n", "mcp", "cline", "make.com", "gemini", "copilot", "grok", "claude", "manus", "vectorshift", "roocode", "sops", "pinterest", "custom gpts", "bolt"]
   },
   {
     title: "Agency Course: How to Get Clients and Scale",
     category: "course",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/79219918?md=8a12ae31460444c48ff85c20e3ede4e9",
     description: "Structured 5-week business course with weekly coaching calls. Week 1: Unlock High Paying Clients (offers, productization). Week 2: Lead Generation (best methods). Week 3: Sales Mastery (proposals, mindset, scripts, follow-ups, tracking). Week 4: Hiring (time audits, KPIs, team management). Week 5: Self Improving Systems to Scale (EOS Scorecards, Level 10 Meetings, thinking time). Bonus: How I Make Money with Skool, Facebook Ads for getting clients.",
     topics: ["agency", "clients", "sales", "lead gen", "hiring", "scaling", "productization", "offers", "eos", "scorecards", "facebook ads", "skool", "business"]
   },
   {
     title: "Coaching Calls Archive",
     category: "classroom",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/fd6e9f38?md=48814b8d43d24c9a9c20874e5f03257d",
     description: "Archive of daily 1-hour AI Q&A coaching calls from June 2025 through March 2026. Not individually documented due to volume. Sample topics from March 13th: Perplexity Computer Mode, Claude Artifacts, Claude Skills, KIE.ai ($0.25/video vs Google $1.00), Google Labs/Pomelli/Flow + Gmail, Recall.AI, Napkin (diagrams from text), Paperclip (agent orchestrator), Manus/GenSpark, Codex for GitHub issues, POC-to-MVP workflow. Revisit individual calls when specific topics come up.",
     topics: ["coaching", "q&a", "live calls", "perplexity", "claude", "kie.ai", "napkin", "manus", "genspark", "codex", "github", "weekly"]
   },
   {
+    title: "Q&A Call Recordings",
+    category: "classroom",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/b87e0570?md=1717607ce1d1419fab8f4d43d4449ef2",
+    description: "Weekly Q&A call recordings. Each session includes a Fathom video share link with full transcript available. Topics vary week to week based on member questions. Good for deep-diving specific questions across any topic in the community.",
+    topics: ["coaching", "q&a", "recordings", "fathom", "transcripts", "weekly", "live calls"]
+  },
+  {
     title: "Web Automation & Scraping",
     category: "classroom",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/71efa175?md=e48e15db1de245bc8357b17a374c93c6",
     description: "Mix of scraping, meeting automation, client onboarding, and dev tools. Lessons: Scraping Live Pages with AI + N8N, Automations (opt-ins, landing pages, websites), Fathom Automations, Fathom + Zapier, Live Page to Video Transcript Automation, Client Onboarding through GHL (GoHighLevel), Cline 3.4 Web Research, Claude 3.7 Sonnet + Bolt DIY, ChatGPT macOS Coding Editor, AI Powered Inbound Call Agent.",
     topics: ["scraping", "n8n", "fathom", "zapier", "gohighlevel", "ghl", "client onboarding", "cline", "claude", "bolt", "call agent", "web automation", "landing pages"]
   },
   {
     title: "AI SEO Automation",
     category: "classroom",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/42d25f4b?md=858167d49c654483a5efd0749f81dcaf",
     description: "Julian's core expertise (his YouTube channel is 'Julian Goldie SEO'). Lessons: SEO Writing AI, Rank #1 with Make SEO, Perplexity AI SEO, Perplexity + Claude Workflow for SEO, Rank #1 in 60 Seconds, 50+ Free AI SEO Tools, How to Humanize AI Text and Bypass AI Detectors, Manus (building, vibe coding, editing websites), LinkedIn SEO, AI SEO Process to Rank #1.",
     topics: ["seo", "perplexity", "claude", "make.com", "ai detection", "humanize", "linkedin", "manus", "ranking", "keywords", "content", "writing"]
   },
   {
     title: "50+ Free AI SEO Tools",
     category: "classroom",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/dae113ad?md=e0092b030e8d4420a871ea079d6bc339",
     description: "Companion to the AI SEO Automation classroom. Includes: Free Content Humanizer, Free AI SEO Content Tool, Free Keyword Research Tool, Free 1-Click Content Optimizer, Free Topical Map Maker, plus a 40-minute overview video covering all 50+ tools. Also promotes Julian's SEO Elite Circle and free SEO strategy session.",
     topics: ["seo", "free tools", "keyword research", "content optimizer", "topical map", "humanizer", "seo tools"]
   },
   {
     title: "Recommended Watches",
     category: "resource",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/607e02e8?md=6629c77da19a4f4492fec5a87d121ec3",
     description: "Julian's curated shortlist of longer-form deep-dive content. Includes: N8N Agents, Open Operator (browser automation), Abacus AI, Automate Websites with Windsurf AI, DeepSeek-R1 Full Course, Bolt.DIY, Manus Full 3-Hour Course. Mix of deep-dive courses and tool overviews.",
     topics: ["n8n", "deepseek", "manus", "bolt", "windsurf", "browser automation", "courses", "learning"]
   },
   {
     title: "YouTube AI: 6-Week No BS Roadmap",
     category: "course",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/b3adcb98?md=2e904c1aa7554fb1b3ed8f02cc3cbb51",
     description: "Full structured YouTube course. Week 1 (Strategy): Reverse-engineer monetization funnel before creating content, don't chase views, set a 'get out point' (300 views min or 30 videos no leads). Week 2 (30-Day Challenge): 1 video/day, clickbait title template (65 char max), build funnel landing page. Week 3 (Content Creation): Screencast format, Descript for editing (under 10 min, studio sound), thumbnail psychology, YouTube SEO overrated. Week 4 (Iteration): Analytics, trending topics, pen/paper brainstorming. Week 5 (Systems): Delegate/eliminate/hire framework, Shorts SOP, weekly elimination list. Week 6 (Iteration): Stats tracking, creative burnout, split testing via thumbnailtest.com, batching sessions. Bonus: YouTube Checklist SOP, Thumbnail hiring via Upwork ($5/thumbnail), How I Get 10 Million Views. Content ideas: UGC vlogs, tutorials, reviews (affiliate), AI cartoons, stories, 'AI vs human' comparisons.",
     topics: ["youtube", "video", "channel", "thumbnails", "descript", "shorts", "content creation", "monetization", "upwork", "split testing", "analytics", "seo", "funnel"]
   },
@@ -461,30 +515,42 @@ const DATA = [
   {
     title: "Affiliate Marketing: How to Make Money Fast",
     category: "classroom",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/a97109ed?md=264bfb5b04084dfdbf2e278d82ddb52f",
     description: "Covers 4 methods: AI Money Lab (83 Second Magic), Clipping + Repurposing, Reshare Method, Reviews. Also: How to Automate Affiliate Marketing, Mistakes to Avoid, Google Gemini for making money online. Member case studies: Sanny (quick sale via video clips), Steve Light (AI clipping), Elsa (affiliate sales), MQ ($399 from 1 tweet), Jacky Chou (podcast method, 2 sales in 24 hours).",
     topics: ["affiliate marketing", "monetization", "clipping", "repurposing", "reviews", "gemini", "case studies", "sales", "income"]
   },
   {
     title: "How to 100X Productivity with ChatGPT",
     category: "classroom",
-    description: "Final unlocked classroom in the catalog. Lessons: Intro and 1 Easy WIN, 7-Figure SEO Productivity Hacks, How to Remember 100X More, How to Learn 100X Faster, How to Boost Your Energy, Never Type A Prompt Again (voice/dictation workflows), How to Get Rid of Lowest Leverage Distraction, How to Quickly Scale Your Biz. ChatGPT-focused productivity and mindset content.",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/731e8232?md=f40da3728a294d2ca4138ff63784da8b",
+    description: "Lessons: Intro and 1 Easy WIN, 7-Figure SEO Productivity Hacks, How to Remember 100X More, How to Learn 100X Faster, How to Boost Your Energy, Never Type A Prompt Again (voice/dictation workflows), How to Get Rid of Lowest Leverage Distraction, How to Quickly Scale Your Biz. ChatGPT-focused productivity and mindset content.",
     topics: ["chatgpt", "productivity", "voice", "dictation", "seo", "learning", "energy", "mindset", "scaling"]
   },
   {
     title: "AI Tools I Use",
     category: "resource",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/c15327f4?md=f2596d8635f2473f92c2cfa3ae8e4e4c",
     description: "A Google Doc listing Julian's current AI tool stack (what he uses and what he doesn't), kept updated. Purpose: reduce overwhelm for members choosing tools. Also contains 'How I Make Money with Skool' lesson (locked, requires DM to Julian for access).",
     topics: ["tools", "tool stack", "recommendations", "reference"]
   },
   {
     title: "SOPs Collection (Skipped / Outdated)",
     category: "resource",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/37b1b0ba?md=abde0b05d18f4661b2aff3ebe6b0efab",
     description: "Julian's best SOPs and workflows from August-October 2025. Intentionally skipped during the March 2026 audit because 6+ month old AI SOPs are likely outdated. Low priority for revisit.",
     topics: ["sops", "workflows", "outdated", "archive"]
   },
   {
+    title: "AI SOP Special Pack",
+    category: "resource",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/750c00a0?md=43984a3ff6cf41b694c4ae179dbef0ec",
+    description: "A curated pack of AI SOPs from Julian's community. Focused collection of the most useful automated workflows and standard operating procedures.",
+    topics: ["sops", "ai", "automation", "workflows", "pack", "templates"]
+  },
+  {
     title: "Road to $10K",
     category: "classroom",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/14f83878?md=f143f66a90de4e60b29e509a726e7a97",
     description: "Lessons: How I Make $640/Day with AI Avatars (11-min video showing 7x revenue with avatar vs. face, directly relevant to AI UGC shorts), How to Make Money with Skool, Twitter AI System $1000/Day, Facebook income method. Also includes the full 'Goldie Niche Stack Framework' 30-day SOP for building a paid Skool community using AI. Phase 1 (Days 1-7): niche selection via Google Trends + Gemini, validate on Skool Discover, create dream member avatar, name community. Tools: Skool, Google Trends, Gemini, YouTube, VidIQ, NotebookLM, Descript, Canva.",
     topics: ["monetization", "avatar", "income", "skool", "twitter", "facebook", "niche", "community building", "google trends", "vidiq", "notebooklm", "descript", "canva"]
   },
@@ -497,6 +563,7 @@ const DATA = [
   {
     title: "How to Make Money with a Skool Community (Full SOP)",
     category: "framework",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/2705665e?md=b247a875f02841758cacd1554bbf6291",
     description: "Step-by-step SOP for building a paid Skool community. Step 1: Define your offer (what audience wants, risk-free offer). Step 2: Set up Skool (Community, Classroom, Calendar sections). Step 3: Build funnel (Attention > Invite to Skool > Build Trust > Convert). Step 4: Fill funnel with daily/weekly content on Twitter, YouTube, blog, email. Step 5: Value Ladder (Free lead magnet > $7-50 course > $300+/mo Mastermind > $1000+/mo DFY services). Step 6: Sell Mastermind (free for agency clients, or charge $300+/mo, or use as conversion tool). Step 7: Live calls = passive course content. Step 8: Scale with automation (recycle content, collect testimonials). Pro tip: Skool vs Facebook Groups -- Skool allows payment, structured content, no algorithm.",
     topics: ["skool", "community", "monetization", "funnel", "value ladder", "mastermind", "content", "lead magnet", "agency", "live calls", "facebook groups", "sop"]
   },
@@ -509,8 +576,16 @@ const DATA = [
   {
     title: "Annual Member Vault",
     category: "resource",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/cb7c2c92?md=337012e4e4d24d6cbf04905cad8bda03",
     description: "Exclusive annual member assets (claimed value $112,755+). Includes: Complete SOP Playbook (115+ systems), Sales Team SOP, Agency Metrics Dashboard / EOS Scorecard, Group Interview Playbook, 189+ YouTube Thumbnail Templates (Canva), Million-Dollar Tweet Library, Private Vlog & Podcast Archive, Winning Ad Swipe File, Custom GPT Collection (DM Julian), Weekly Performance Leaderboard (cash prizes), Annual Member Discord (DM for invite), SEO Elite Circle access (DM with email), $1,000 Agency Credit, Lifetime Price Lock, Commercial License, All Future Content FREE, 2 Bonus Annual Memberships (DM with emails). Several items require DMing Julian to unlock.",
     topics: ["annual", "vault", "sops", "templates", "thumbnails", "tweets", "ads", "gpts", "discord", "seo elite", "bonus", "commercial license"]
+  },
+  {
+    title: "Bonuses",
+    category: "resource",
+    url: "https://www.skool.com/ai-profit-lab-7462/classroom/8f844abc?md=aa7245cf2a6145bb9f0874adf9dbb299",
+    description: "Bonus content and resources included with AIPB membership.",
+    topics: ["bonus", "resources", "extras"]
   },
   {
     title: "Locked: AI SEO Audit",
@@ -638,8 +713,11 @@ function render() {
           <span class="card-category cat-${item.category}">${getCategoryLabel(item.category)}</span>
         </div>
         <div class="card-body">${highlightText(item.description, query)}</div>
-        <div class="card-topics">
-          ${item.topics.map(t => `<span class="topic-tag">${t}</span>`).join('')}
+        <div class="card-footer">
+          <div class="card-topics">
+            ${item.topics.map(t => `<span class="topic-tag">${t}</span>`).join('')}
+          </div>
+          ${item.url ? `<a class="skool-link" href="${item.url}" target="_blank" rel="noopener">Open in Skool &rarr;</a>` : ''}
         </div>
       </div>`;
   }).join('');
