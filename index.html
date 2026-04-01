@@ -711,8 +711,20 @@ function render() {
   }).join('');
 }
 
+// Sync search input to URL param
+function updateUrl() {
+  const q = searchInput.value.trim();
+  const url = new URL(window.location);
+  if (q) {
+    url.searchParams.set('q', q);
+  } else {
+    url.searchParams.delete('q');
+  }
+  window.history.replaceState({}, '', url);
+}
+
 // Event listeners
-searchInput.addEventListener('input', render);
+searchInput.addEventListener('input', () => { render(); updateUrl(); });
 
 filterBtns.forEach(btn => {
   btn.addEventListener('click', () => {
@@ -722,6 +734,13 @@ filterBtns.forEach(btn => {
     render();
   });
 });
+
+// On load: read ?q= from URL and pre-fill search
+const params = new URLSearchParams(window.location.search);
+const initialQuery = params.get('q');
+if (initialQuery) {
+  searchInput.value = initialQuery;
+}
 
 // Initial render
 render();
